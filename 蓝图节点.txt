@@ -1,0 +1,63 @@
+1.delay 按下某键出发事件，不断点击，不会刷新时间，计时仍在继续第一次点击时候开始的计时器。
+
+  Retriggerable Delay    不断点击后，会刷新时间，重新计时
+
+2.event tick 游戏开始之后，每秒执行60次左右
+
+  delay  duration:1  一秒后
+
+3.循环： forloop forloopbreak whileloop foreachloop foreahloopwithbreak
+
+4.multiGate: is random √ 随机打开一个门，  □ 为顺序打开每个门直至关闭
+
+5.sequence： 同时执行多个方法
+
+6.appendArray : 连接数组
+
+7.add: 不断在数组最后添加新元素， 
+
+、addunique： 检查数组中是否有已存在的要添加的数字，如果有，则不添加，反之添加
+
+8.remove: 删除所有跟所填数相同的数字
+
+9.removeinde:删除指定索引数字
+
+10： find item ： 输入查询内容 返回索引值
+
+11. contains item : 判断是否出来存在某数值，返回布尔值
+
+11. resize： 重新分配数组的长度
+
+12.shuffle: 打乱数组里的数值顺序
+
+13.结构体。 蓝图目录中新建struct， 关卡蓝图中可以breakstruct获取struct中的值，并且可以从struct中
+
+   获取各个属性的值，
+
+14.结构体，改变属性值： 1）使用set members in mystruct   
+			
+			2)使用set直接替换这个结构体，并用makeMyStruct 设值
+
+15.set Array Elem ：设置指定的某个数组里的值 
+
+16.getActorLocaltion : 获取actor坐标
+
+17.setActorLoal：设置坐标 sweep选项：扫描移动方向是否有障碍物，有则移动停止到障碍物边缘
+
+18.绘制点线 draw debug point :position 为break hit result 里的location  
+
+19. draw debug line: line strat 为location  
+		     line end 为 location + normal*20
+
+    thickness为粗细  duration为持续时间	
+
+20.碰撞事件： model选择box trigger ：游戏人物碰撞到box trigger之后可以触发蓝图所编写的事件;
+
+21.碰撞开始及结束：
+	
+	选中物体之后 ，在蓝图中右键 add event for sky sphere --> collision--->  onActorBeginOverlap
+	or onActorEndOverlap   
+
+22.碰撞的动作的过渡 :addTimeLine --> lerp -->makeVector设置坐标
+
+23.石门打开后，火堆熄灭。： addTimeLine执行结束后 -> setActive-->new active不要打勾（意味着没有激活，则火堆熄灭）
