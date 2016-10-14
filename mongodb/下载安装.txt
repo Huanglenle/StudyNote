@@ -1,0 +1,26 @@
+一、下载
+     MongoDB的官网可以下载最新的MongoDB:https://www.mongodb.com/download-center#community
+
+二、安装
+     1.在D盘创建安装目录，D:\MongoDb，将解压后的文件拷入新建的文件。
+     2.在D盘创建一个目录，D:\MongoDb\data，用于存放MongoDB的数据。
+     3.执行安装，使用命令行，进入MongDb的安装目录，执行安装命令，并指明存放data的路径。
+   
+   注意，如果这是你的目录中有空格，会下面的错：
+      解决办法，就是将后面的路径加上""，如下：
+      最后一行显示我们的MongoDB已经连接到27017,
+      它是默认的数据库的端口；它建立完数据库之后，会在我们的MongoDbData文件夹下，生成一些文件夹和文件：
+      在journal文件夹中会存储相应的数据文件，NoSQL的MongoDB，它以文件的形式，
+      也就是说被二进制码转换过的json形式来存储所有的数据模型。
+
+三、配置环境变量
+     在Path环境变量的最后添加分号，然后添加MongoDB的bin路径：
+     然后，在cmd中输入，命令mongod -help，如果有相应的提示，说明我们的MongoDB数据库安装成功了；
+    
+四、启动数据库
+     启动MongoDB数据库，需要根据自己配置mongodb.bat文件，现在桌面上创建一个mongo的文件夹，
+	里面新建mongodb.bat文件，然后我们来编写这个可执行文件如下：     
+
+		mongod --dbpath D:\Program Files\MongoDbData  
+
+     运行mongodb.bat文件，MongoDB便启动成功！

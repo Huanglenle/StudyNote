@@ -1,0 +1,62 @@
+1.打开shell
+
+	打开cmd,输入mongodb命令打开shell --> 进入bin文件夹 执行 mongo  即可代开shell，
+	shell就是mongodb的客户端，同时也是一个js编译器。默认连接"test"数据库
+
+2.insert插入: 
+	常见的插入操作也就两种形式存在：“单条插入”和“批量插入”(for循环)
+	db.person.insert({"name":"huanglenle","age":"21"})
+	db.person.insert({"name":"meishaonvo","age":"20"})
+
+3.find查询：
+	db.person.find({"name":"huanglenle"}) --> 输出整条信息
+	db.person.find()                      --> 输出所有信息
+
+	1） > ,  >=  ,  <  ,  <=  , !=  , =    
+   --->   $gt , $gte , $lt , $lte , $ne , 没有任何关键字
+
+	eg:   db.user.find({"age":{$gt:20}}) 查询age>20的数据
+
+
+	2）无关键字，$or,$in,$nin    (或，在什么数组里，不在数组里)
+	
+	eg:   db.user.find({age:{$in:[22,25]}})   --> age不带引号。对象属性带引号
+
+	3）正则表达式匹配
+	
+	eg:   db.user.find({"name":/^j/,"name":/e$/})   --> 打印出 "name" : "joe"的具体数据
+
+	4）$where 利用js查询
+
+	eg:   db.user.find({$where:function(){   return this.name=='jack'}})  -->打印出"name" : "jack"的具体数据
+
+
+4.update更新：
+	1）整体更新：
+         	db.person.update({"name":"huanglenle"},{"name":"apiao","age":"21"})
+        	前者为查找条件，后者为替换值
+
+	2）局部更新：
+		①$inc 在原有的基础上自增$inc指定的值
+		db.user.update({"name":"jack"},{$inc:{"age":12}})
+		更新前。age为60  更新后为 75
+		②$set  修改指定的值
+		db.user.update({"name":"jack"},{$set:{"age":10}})
+		更新前为 age为75   更新后为10
+	
+	3）upsert操作：如果没有查询到要修改的数据，则在数据库新增一条，
+	   使用方法： 讲update的第三个参数设为true即可
+		 db.user.update({"name":"lenle"},{$inc:{"age":2}},true)
+	
+	4)批量更新，在mongodb中如果匹配多条，默认情况下只更新第一条，如果有需要求必须批量更新，
+	  那么在mongodb中实现也是简单，在update的第四个参数设为true即可，如上。
+		
+	
+
+5.remove删除：
+	db.person.remove({})                       --> 删除所有
+	db.person.remove({"name":"huanglenle"})  --> 删除整条信息
+
+6.集合长度
+	db.person.count();   --->2
+
