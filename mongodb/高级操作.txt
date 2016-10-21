@@ -1,0 +1,89 @@
+1.distinct 列出不同的值，指定谁，谁也不能重复
+
+	 eg:db.user.distanct("age")       ---> [10,25,2]
+ 
+2.group：通过key值将每条数据进行分组
+ 
+	1）key:  每个分组的key
+
+	2）inital： 每组都分享一个 初始化函数,特别注意：是每一组，
+
+	3）$reduce： 这个函数的第一个参数是当前的文档对象，第二个参数是上一次function操作的累计对象，第一次为inital中的{“person”:[]}
+		     
+                     有多少个文档，$reduce就会调用多少次
+
+	4）condistion: 过滤条件
+	
+	5）finalize: 这是函数，每一组文档执行完后，多会触发此方法，那么在每组集合里面加上count,将输出数量
+
+	eg: > db.user.group({
+
+		... "key":{"age":true},   //key值为
+
+		... "initial":{"person":[]},
+
+		... "$reduce":function(doc,out){
+
+		...   out.person.push(doc.name);
+
+		... }
+
+		... "condistion":{"age":{$lt:25}},
+
+		... "finalize":function(out){
+
+			out.count = out.person.length;
+		... }
+
+		... })
+
+3. mapReduce:  mapReduce其实是一种编程模型，用在分布式计算中，其中一个是“map”函数，一个是"reduce"函数
+
+
+	1) map成为映射函数，里面会调用emit(key,value)，集合会按照你指定的Key进行映射分组
+
+	> map = function(){               
+		 emit(this.name,{count:233});  //输出属性，和具有此属性的数组长度
+		 emit(this.age,{count:233});
+		}
+
+	2）reduce简称为简化函数，会对map分组后的数据进行简化，reduce里面的key就是emit中的key，reduce的value是emit
+	   分组后的emit(value)的集合
+
+	> reduce = function(key,value){
+		var result = {count:0};
+		for(var i=0;i<value.length;i++ ){
+			result.count += value[i].count;
+		}
+		return result;
+	}
+
+	> db.user.mapReduce(map,reduce,{"out":"collection"})
+	{
+ 	       "result" : "collection",    //存放的集合名
+     	       "timeMillis" : 169,	   //
+   	       "counts" : {	
+             	   "input" : 4,		   //传入文档的个数
+             	   "emit" : 8,	 	   //此函数被调用的次数
+              	   "reduce" : 1,	   //此函数被调用的次数
+              	   "output" : 7		   //最后返回的文档个数
+       		 },
+               "ok" : 1
+	}
+
+	//查询collection数组的结果：
+
+	>  db.collection.find()
+	{ "_id" : 2, "value" : { "count" : 233 } }
+	{ "_id" : 10, "value" : { "count" : 233 } }
+	{ "_id" : 25, "value" : { "count" : 466 } }
+
+	{ "_id" : "jack", "value" : { "count" : 233 } }
+	{ "_id" : "joe", "value" : { "count" : 233 } }
+	{ "_id" : "lenle", "value" : { "count" : 233 } }
+	{ "_id" : "wei", "value" : { "count" : 233 } }
+
+
+4.游标
+	
+	

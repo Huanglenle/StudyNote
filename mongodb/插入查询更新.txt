@@ -58,5 +58,6 @@
 	db.person.remove({"name":"huanglenle"})  --> 删除整条信息
 
 6.集合长度
-	db.person.count();   --->2
+	db.user.count();   --->4
+	db.user.count({"age":25})     -->2
 
