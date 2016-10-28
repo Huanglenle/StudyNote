@@ -1,10 +1,60 @@
 
-Root ： 行为树的根，只拥有一个连接，没有自身属性，但选中后可在Details面板上显示行为树的属性
+Task：BT的叶节点，真正干活的。
 
-Composite  ： 定义一个分支的根以及该分支如何被执行的基本规则
+Decorator：用来做条件判断，加在Composite节点上，决定是否执行该节点下的子树，或者加在Task上决定是否执行该Task。
 
-Services ： 附着在Composite节点上，只要其分支节点被执行，它们便将按所定义的频率执行。
+Service：可以加在Composite节点上，当该节点及其子树被执行时，该Service按照指定时间间隔被重复调用，用来做一些状态检查或更新Blackboard。
 
-Task ： 行为书的叶子，实际“执行”的操作，不含输出连接
+Root：BT的起点，且每个BT只能有唯一的Root节点，只能连接一个子节点，不能添加Decorator和Service。
 
-Decorator  ： 条件语句，这种节点附着于其他节点，决定着树中的一个分支，甚至单个节点是否能被执行
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+和BT协同工作的几个类：
+
+AIController：和PlayerController的功能类似，用于电脑控制的Pawn，可以为BT提供一些方法封装，根据Pawn状态或周围环境做一些决定，每个Pawn实例都有自己的AIController实例。
+
+Blackboard：用来存储BT所需的数据，在BT中的Service和Task或其他节点之间共享数据，或者用于其他类给BT共享数据。
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+Decorator
+
+点击节点中的Decorator，可以在详细面板中看到一个ObserverAborts，当条件不满足时，可以中断当前执行的子树或任务。Abort Property有四个值可选：
+
+	None，即不中断
+	Self，会中断当前节点下的子树或任务
+	LowerPriority，会中断比当前节点优先级低的兄弟节点下的子树或任务
+	Both，就是Self和LowerPriority两种节点都会中断
+
+编辑器中标记了相关节点的优先级，会受中断影响的节点还会变色。
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+Task
+
+Task启动时，会收到EventReceiveExecute事件调用，作为执行Task的入口，Task执行完毕后需要手动调用FinishExecute，Task才算完成，否则BT会卡在当前Task，完成之前不会执行该Task之后的节点。比如，像移动到某位置的操作，需要等移动到目的地后，再调用Finished Execute，否则就会执行到后面的节点，扰乱或中断移动操作。FinishExecute有一个bool的返回值，Composite节点根据该返回值决定是否执行后续节点还是返回父节点。
+
+Task可以被上文提到的Decorator中断，被中断时会收到EventReceiveAbort事件，可以做一些中断处理，比如停止移动等，然后手动调用FinishAbort。
+
+引擎本身提供一些常用的Task，如：
+
+	MoveTo：让拥有CharacterMovement组件的Pawn根据NavMesh移动到Blackboard中指定的位置
+	PlaySound：播放声音
+	RunBehavior：执行其他的BehaviorTree
+	Wait：等待指定时间
+	WaitBlackboardTime：等待Blackboard中指定的时间
+
+详情参见官方文档
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Blackboard 
+
+Blackboard是BT中必不可少的功能，由于BT编辑器中不能直接给节点传入参数，或者获得节点运行结果，这些数据都需要通过Blackboard缓存起来，来完成节点与节点，节点与游戏逻辑之间的通讯。
+
+选择Root节点时，可以在Details面板里选择Blackboard，可以在右上角的Blackboard按钮切换到Blackboard编辑器。
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
